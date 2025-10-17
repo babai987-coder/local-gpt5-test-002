@@ -3,221 +3,306 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Motivational Quote Generator</title>
+  <title>Quote Generator with Categories</title>
   <style>
-    :root{
-      --bg-1: #0f172a;
-      --bg-2: #1e293b;
-      --card: #0b1020cc;
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
       --text: #e5e7eb;
-      --muted: #94a3b8;
-      --accent: #60a5fa;
-      --accent-2: #34d399;
-      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --muted: #9ca3af;
+      --accent: #22d3ee;
+      --accent-2: #a78bfa;
+      --btn: #22c55e;
+      --btn-hover: #16a34a;
     }
     * { box-sizing: border-box; }
     html, body {
       height: 100%;
       margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, sans-serif;
       color: var(--text);
-      background: radial-gradient(1200px 800px at 10% 10%, #1f2937, transparent 60%),
-                  radial-gradient(1200px 800px at 90% 90%, #0b1324, transparent 60%),
-                  linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      background: radial-gradient(1000px 800px at 10% 10%, rgba(34, 211, 238, .12), transparent),
+                  radial-gradient(800px 800px at 90% 20%, rgba(167, 139, 250, .12), transparent),
+                  linear-gradient(180deg, #0b1220, #0f172a 40%);
     }
     .app {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px;
       min-height: 100%;
       display: grid;
-      place-items: center;
-      padding: 24px;
+      grid-template-rows: auto 1fr auto;
+      gap: 24px;
     }
-    .card {
-      width: min(720px, 92vw);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 28px 24px;
-      position: relative;
-      overflow: hidden;
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
     }
-    .card::after{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      background:
-        radial-gradient(400px 80px at 20% -10%, rgba(52,211,153,.2), transparent 60%),
-        radial-gradient(400px 80px at 80% 110%, rgba(96,165,250,.2), transparent 60%);
-      pointer-events:none;
-      mix-blend-mode: screen;
-    }
-    .title {
+    h1 {
+      font-size: 22px;
+      margin: 0;
+      letter-spacing: 0.3px;
       display: flex;
       align-items: center;
       gap: 10px;
-      font-weight: 700;
-      letter-spacing: .4px;
-      color: #f8fafc;
-      margin: 0 0 8px;
     }
-    .subtitle {
-      margin: 0 0 18px;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-    blockquote {
-      margin: 0;
-      padding: 0;
-    }
-    .quote {
-      font-size: clamp(1.25rem, 2.4vw + 0.8rem, 1.9rem);
-      line-height: 1.45;
-      font-weight: 600;
-      letter-spacing: .2px;
-    }
-    .quote::before, .quote::after { color: var(--accent-2); }
-    .quote::before { content: "“"; }
-    .quote::after { content: "”"; }
-    .author {
-      margin-top: 12px;
-      color: var(--muted);
-      font-style: normal;
-      font-weight: 600;
-      letter-spacing: .3px;
+    h1 .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 12px rgba(34, 211, 238, 0.8);
     }
     .controls {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+    label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    select {
+      appearance: none;
+      background: linear-gradient(180deg, #0b1220, #0c1424);
+      border: 1px solid #24324a;
+      color: var(--text);
+      padding: 10px 36px 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      position: relative;
+    }
+    .select-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .select-wrap::after {
+      content: "▾";
+      position: absolute;
+      right: 10px;
+      pointer-events: none;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+      display: grid;
+      gap: 16px;
+      align-content: center;
+      min-height: 260px;
+    }
+    .quote {
+      font-size: 22px;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .quote::before, .quote::after {
+      content: "“";
+      color: var(--accent);
+      margin-right: 6px;
+    }
+    .quote::after {
+      content: "”";
+      margin-left: 6px;
+      margin-right: 0;
+    }
+    .author {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .pill {
+      font-size: 12px;
+      color: #0b1324;
+      background: linear-gradient(45deg, var(--accent), var(--accent-2));
+      border-radius: 999px;
+      padding: 6px 10px;
+      width: max-content;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
     button {
-      appearance: none;
-      border: 0;
-      padding: 12px 18px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), #7dd3fc);
-      color: #0b1020;
-      font-weight: 800;
+      background: var(--btn);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 8px 18px rgba(96,165,250,.35);
-      transition: transform .08s ease, filter .2s ease;
+      transition: transform .05s ease, background .2s ease, box-shadow .2s ease;
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.25);
     }
-    button:hover { filter: brightness(1.05); }
-    button:active { transform: translateY(1px) scale(.995); }
-    .hint {
+    button:hover { background: var(--btn-hover); }
+    button:active { transform: translateY(1px); }
+    .subtle {
+      background: transparent;
       color: var(--muted);
-      font-size: 0.9rem;
+      border: 1px solid #24324a;
+      box-shadow: none;
+    }
+    .subtle:hover {
+      color: var(--text);
+      border-color: #2f4160;
+    }
+    footer {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      padding-bottom: 12px;
     }
     .fade {
-      animation: fade .35s ease both;
+      animation: fadeIn .25s ease;
     }
-    @keyframes fade {
+    @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
-      to   { opacity: 1; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .footer {
-      margin-top: 18px;
-      font-size: 0.85rem;
-      color: #94a3b8;
-    }
-    .sr-only{
-      position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    @media (max-width: 520px) {
+      .quote { font-size: 18px; }
+      .card { min-height: 220px; }
     }
   </style>
 </head>
 <body>
-  <main class="app">
-    <section class="card" aria-live="polite">
-      <h1 class="title">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M7 7h5v5H9a2 2 0 0 0-2 2v3H4v-3a5 5 0 0 1 5-5V7Zm10 0h-5v5h3a2 2 0 0 1 2 2v3h3v-3a5 5 0 0 0-5-5V7Z" fill="currentColor"/>
-        </svg>
-        Motivational Quotes
-      </h1>
-      <p class="subtitle">Get a fresh spark of inspiration. Click the button or press Space/Enter.</p>
-
-      <blockquote>
-        <p id="quoteText" class="quote fade">Loading inspiration…</p>
-        <cite id="quoteAuthor" class="author">—</cite>
-      </blockquote>
-
-      <div class="controls">
-        <button id="newQuoteBtn" aria-label="Generate a new quote">New Quote</button>
-        <span class="hint">Tip: press Space or Enter</span>
+  <div class="app">
+    <header>
+      <h1><span class="dot"></span> Quote Generator</h1>
+      <div class="controls" role="region" aria-label="Filters and actions">
+        <label for="categorySelect">Category</label>
+        <div class="select-wrap">
+          <select id="categorySelect" aria-label="Quote category filter">
+            <option value="all">All Categories</option>
+            <option value="Motivation">Motivation</option>
+            <option value="Life">Life</option>
+            <option value="Success">Success</option>
+          </select>
+        </div>
+        <button id="newQuoteBtn" title="Get a new random quote">New Quote</button>
       </div>
+    </header>
 
-      <div class="footer">
-        Built with vanilla HTML, CSS, and JS.
+    <main>
+      <div class="card" aria-live="polite" aria-atomic="true">
+        <span id="categoryPill" class="pill">All</span>
+        <p id="quoteText" class="quote fade">Loading quote...</p>
+        <div id="author" class="author">—</div>
       </div>
-    </section>
-  </main>
+    </main>
+
+    <footer>
+      Tip: Use the dropdown to filter by category. Click “New Quote” for another random one.
+    </footer>
+  </div>
 
   <script>
-    (function(){
-      const QUOTES = [
-        { t: "The only way to do great work is to love what you do.", a: "Steve Jobs" },
-        { t: "Whether you think you can or you think you can't, you're right.", a: "Henry Ford" },
-        { t: "The future depends on what you do today.", a: "Mahatma Gandhi" },
-        { t: "It does not matter how slowly you go as long as you do not stop.", a: "Confucius" },
-        { t: "Success is not final, failure is not fatal: It is the courage to continue that counts.", a: "Winston Churchill" },
-        { t: "Your time is limited, don't waste it living someone else's life.", a: "Steve Jobs" },
-        { t: "Believe you can and you're halfway there.", a: "Theodore Roosevelt" },
-        { t: "Dream big and dare to fail.", a: "Norman Vaughan" },
-        { t: "Everything you can imagine is real.", a: "Pablo Picasso" },
-        { t: "You miss 100% of the shots you don't take.", a: "Wayne Gretzky" },
-        { t: "If you can dream it, you can do it.", a: "Walt Disney" },
-        { t: "Start where you are. Use what you have. Do what you can.", a: "Arthur Ashe" },
-        { t: "Don't watch the clock; do what it does. Keep going.", a: "Sam Levenson" },
-        { t: "The best way to predict the future is to create it.", a: "Peter Drucker" },
-        { t: "Hardships often prepare ordinary people for an extraordinary destiny.", a: "C. S. Lewis" },
-        { t: "What we fear of doing most is usually what we most need to do.", a: "Ralph Waldo Emerson" },
-        { t: "Act as if what you do makes a difference. It does.", a: "William James" },
-        { t: "Opportunities don't happen, you create them.", a: "Chris Grosser" }
-      ];
+    const quotes = [
+      // Motivation
+      { text: "The only way to do great work is to love what you do.", author: "Steve Jobs", category: "Motivation" },
+      { text: "Don’t watch the clock; do what it does. Keep going.", author: "Sam Levenson", category: "Motivation" },
+      { text: "Action is the foundational key to all success.", author: "Pablo Picasso", category: "Motivation" },
+      { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe", category: "Motivation" },
+      // Life
+      { text: "Life is what happens when you’re busy making other plans.", author: "John Lennon", category: "Life" },
+      { text: "The purpose of our lives is to be happy.", author: "Dalai Lama", category: "Life" },
+      { text: "In the end, we only regret the chances we didn’t take.", author: "Often Attributed", category: "Life" },
+      { text: "To live is the rarest thing in the world. Most people exist, that is all.", author: "Oscar Wilde", category: "Life" },
+      // Success
+      { text: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau", category: "Success" },
+      { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill", category: "Success" },
+      { text: "Opportunities don’t happen. You create them.", author: "Chris Grosser", category: "Success" },
+      { text: "I find that the harder I work, the more luck I seem to have.", author: "Thomas Jefferson", category: "Success" }
+    ];
 
-      const quoteEl = document.getElementById('quoteText');
-      const authorEl = document.getElementById('quoteAuthor');
-      const btn = document.getElementById('newQuoteBtn');
+    const quoteTextEl = document.getElementById('quoteText');
+    const authorEl = document.getElementById('author');
+    const newQuoteBtn = document.getElementById('newQuoteBtn');
+    const categorySelect = document.getElementById('categorySelect');
+    const categoryPill = document.getElementById('categoryPill');
 
-      let lastIndex = -1;
+    let lastIndex = -1;
 
-      function randomIndex(exclude) {
-        if (QUOTES.length <= 1) return 0;
-        let idx;
-        do { idx = Math.floor(Math.random() * QUOTES.length); }
-        while (idx === exclude);
-        return idx;
+    function getFilteredQuotes(categoryValue) {
+      if (!categoryValue || categoryValue === 'all') return quotes;
+      return quotes.filter(q => q.category.toLowerCase() === categoryValue.toLowerCase());
+    }
+
+    function pickRandomIndex(len, avoidIndex = -1) {
+      if (len <= 1) return 0;
+      let idx = Math.floor(Math.random() * len);
+      if (idx === avoidIndex) {
+        idx = (idx + 1 + Math.floor(Math.random() * (len - 1))) % len;
       }
+      return idx;
+    }
 
-      function setQuote(q){
-        // simple re-trigger fade animation
-        quoteEl.classList.remove('fade');
-        void quoteEl.offsetWidth; // reflow
-        quoteEl.classList.add('fade');
-
-        quoteEl.textContent = q.t;
-        authorEl.textContent = "— " + q.a;
+    function showRandomQuote() {
+      const categoryValue = categorySelect.value || 'all';
+      const pool = getFilteredQuotes(categoryValue);
+      if (!pool.length) {
+        quoteTextEl.textContent = "No quotes available for this category.";
+        authorEl.textContent = "—";
+        categoryPill.textContent = categoryValue === 'all' ? 'All' : categoryValue;
+        return;
       }
+      const idx = pickRandomIndex(pool.length, lastIndex);
+      lastIndex = idx;
+      const q = pool[idx];
+      // Update UI with a tiny fade
+      quoteTextEl.classList.remove('fade');
+      void quoteTextEl.offsetWidth; // reflow for animation
+      quoteTextEl.textContent = q.text;
+      quoteTextEl.classList.add('fade');
 
-      function newQuote(){
-        const idx = randomIndex(lastIndex);
-        lastIndex = idx;
-        setQuote(QUOTES[idx]);
-      }
+      authorEl.textContent = `— ${q.author}`;
+      categoryPill.textContent = categoryValue === 'all' ? 'All' : q.category;
+    }
 
-      btn.addEventListener('click', newQuote);
-      document.addEventListener('keydown', (e)=>{
-        if (e.code === 'Space' || e.code === 'Enter') {
-          e.preventDefault();
-          newQuote();
+    // Ensure dropdown matches dataset categories if needed (keeps at least the 3 required)
+    (function syncCategories() {
+      const present = new Set([...categorySelect.options].map(o => o.value));
+      const unique = [...new Set(quotes.map(q => q.category))].sort();
+      for (const cat of unique) {
+        if (!present.has(cat)) {
+          const opt = document.createElement('option');
+          opt.value = cat;
+          opt.textContent = cat;
+          categorySelect.appendChild(opt);
         }
-      });
-
-      // initial quote
-      newQuote();
+      }
     })();
+
+    newQuoteBtn.addEventListener('click', showRandomQuote);
+    categorySelect.addEventListener('change', () => {
+      lastIndex = -1;
+      showRandomQuote();
+    });
+
+    // Initial render
+    showRandomQuote();
+
+    // Keyboard shortcut: R for new quote
+    window.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 'r') {
+        e.preventDefault();
+        showRandomQuote();
+      }
+    });
   </script>
 </body>
 </html>
